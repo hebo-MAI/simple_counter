@@ -1,0 +1,112 @@
+/*
+ 使い方：
+ 勝ったときはスペースを押す
+ 負けたときはカーソルキー(上下左右どれか)を押す
+ 記録を間違えたときはTabキーを押す
+ 保存＆終了するときはESCキーを押す
+ 保存しないときはAlt+F4か右上のXボタンで閉じる
+*/
+
+/* TODO: 
+・一時停止機能
+・フォントを太くする(もしくは数値を画像で表示)
+*/
+
+
+#define SAVE_FILE	"history.txt"
+
+#define KEY_LEFT	(1)
+#define KEY_UP		(2)
+#define KEY_RIGHT	(4)
+#define KEY_DOWN	(8)
+#define KEY_SPACE	(16)
+#define KEY_ENTER	(32)
+#define KEY_CTRL	(64)
+#define KEY_ESC		(128)
+#define KEY_TAB		(1024)
+
+
+
+screen 0, 256, 128, screen_fixedsize | screen_frame
+title "games counter"
+
+gosub *dataload
+gosub *parse
+
+*main
+	gosub *keycheck
+	gosub *display
+	await 20
+
+goto *main
+
+*keycheck
+	stick keys, 0, 0
+	if (keys & KEY_SPACE) != 0 {
+		history += "W"
+		gosub *parse
+	}
+	if (keys & (KEY_LEFT | KEY_UP | KEY_RIGHT | KEY_DOWN)) {
+		history += "L"
+		gosub *parse
+	}
+	if (keys & KEY_TAB) {
+		gosub *history_back
+		gosub *parse
+	}
+	if (keys & KEY_ESC) {
+		gosub *datasave
+		end
+	}
+return
+
+*parse
+	wins = 0
+	consecutive = 0
+	games = 0
+	
+	for i, 0, strlen(history)
+		c = peek(history, i)
+		switch c
+			case 'W'
+				wins++
+				consecutive++
+				games++
+				swbreak
+			case 'L'
+				consecutive = 0
+				games++
+				swbreak
+		swend
+	next
+return
+
+*display
+	redraw 0
+		color 0,0,0	:	boxf
+		pos 0,0
+		color 255,255,255
+		font msgothic, 24, font_antialias | font_bold
+		mes "Result"
+		mes "Wins : " + wins
+		mes "Consecutive : " + consecutive
+		mes "Games : " + games
+		mes "Latest : " + strmid(history, -1, 10)
+	redraw 1
+return
+
+*history_back
+	history = strmid(history, 0, strlen(history) - 1)
+return
+
+*dataload
+	notesel history
+	exist SAVE_FILE
+	if (strsize > 0) {
+		noteload SAVE_FILE
+	}
+return
+
+*datasave
+	notesave SAVE_FILE
+return
