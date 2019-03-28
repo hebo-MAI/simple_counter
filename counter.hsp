@@ -1,15 +1,15 @@
 /*
- g‚¢•ûF
- Ÿ‚Á‚½‚Æ‚«‚ÍƒXƒy[ƒX‚ğ‰Ÿ‚·
- •‰‚¯‚½‚Æ‚«‚ÍƒJ[ƒ\ƒ‹ƒL[(ã‰º¶‰E‚Ç‚ê‚©)‚ğ‰Ÿ‚·
- ‹L˜^‚ğŠÔˆá‚¦‚½‚Æ‚«‚ÍTabƒL[‚ğ‰Ÿ‚·
- •Û‘¶•I—¹‚·‚é‚Æ‚«‚ÍESCƒL[‚ğ‰Ÿ‚·
- •Û‘¶‚µ‚È‚¢‚Æ‚«‚ÍAlt+F4‚©‰Eã‚ÌXƒ{ƒ^ƒ“‚Å•Â‚¶‚é
+ ä½¿ã„æ–¹ï¼š
+ å‹ã£ãŸã¨ãã¯ã‚¹ãƒšãƒ¼ã‚¹ã‚’æŠ¼ã™
+ è² ã‘ãŸã¨ãã¯ã‚«ãƒ¼ã‚½ãƒ«ã‚­ãƒ¼(ä¸Šä¸‹å·¦å³ã©ã‚Œã‹)ã‚’æŠ¼ã™
+ è¨˜éŒ²ã‚’é–“é•ãˆãŸã¨ãã¯Tabã‚­ãƒ¼ã‚’æŠ¼ã™
+ ä¿å­˜ï¼†çµ‚äº†ã™ã‚‹ã¨ãã¯ESCã‚­ãƒ¼ã‚’æŠ¼ã™
+ ä¿å­˜ã—ãªã„ã¨ãã¯Alt+F4ã‹å³ä¸Šã®Xãƒœã‚¿ãƒ³ã§é–‰ã˜ã‚‹
 */
 
 /* TODO: 
-Eˆê’â~‹@”\
-EƒtƒHƒ“ƒg‚ğ‘¾‚­‚·‚é(‚à‚µ‚­‚Í”’l‚ğ‰æ‘œ‚Å•\¦)
+ãƒ»ä¸€æ™‚åœæ­¢æ©Ÿèƒ½
+ãƒ»ãƒ•ã‚©ãƒ³ãƒˆã‚’å¤ªãã™ã‚‹(ã‚‚ã—ãã¯æ•°å€¤ã‚’ç”»åƒã§è¡¨ç¤º)
 */
 
 
@@ -64,6 +64,7 @@ return
 	wins = 0
 	consecutive = 0
 	games = 0
+	ratio_percent = 0.0 
 	
 	for i, 0, strlen(history)
 		c = peek(history, i)
@@ -79,6 +80,8 @@ return
 				swbreak
 		swend
 	next
+
+	ratio_percent = double(wins) * 100 / games
 return
 
 *display
@@ -88,7 +91,8 @@ return
 		color 255,255,255
 		font msgothic, 24, font_antialias | font_bold
 		mes "Result"
-		mes "Wins : " + wins
+		mes "Wins : " + wins + " (" + strf("%2.2f", ratio_percent) + "%)"
+		;mes "Wins : " + wins
 		mes "Consecutive : " + consecutive
 		mes "Games : " + games
 		mes "Latest : " + strmid(history, -1, 10)
